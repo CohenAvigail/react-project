@@ -32,9 +32,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const AppointmentForm = observer((props)=> {
-  
-  const {serviceId} = props;
+  const {serviceId,setAppointment} = props;
   const [open, setOpen] = React.useState(true);
+  const [cnt, setCnt] = React.useState(0);
+
+  let counter=0;
+
 
   //   const handleClickOpen = () => {
   //     setOpen(true);
@@ -42,6 +45,7 @@ const AppointmentForm = observer((props)=> {
   const [date, setDate] = React.useState(null);
 
   const [data, setData] = React.useState({
+    id:"",
     serviceType: ""+serviceId,
     dateTime: ""+date,
     clientName: "",
@@ -50,23 +54,19 @@ const AppointmentForm = observer((props)=> {
   });
 
   function handelChenge(field, value) {
-    console.log(value)
     let enter = data;
     enter[field] = value;
     setData(enter);
-    console.log(data);
   }
 
-  // function handleSave() {
-  //   setOpen(false);
-  // }
+  function handleSave() {
+    console.log(data);
+    store.addMeeting(data);
+    setOpen(false);
+  }
 
   function handleClose () {
-    setOpen(false);
-    console.log(data);
-
-    // let res= await 
-    store.addMeeting(data);
+    setAppointment (false);
   };
 
 
@@ -75,7 +75,7 @@ const AppointmentForm = observer((props)=> {
 
       <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
 
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">  Modal title </DialogTitle>
+        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Add Appointment </DialogTitle>
 
         <IconButton
           aria-label="close"
@@ -90,10 +90,10 @@ const AppointmentForm = observer((props)=> {
           <TextField label="Phone" type="search" color="warning"
             onChange={(e) => handelChenge('clientPhone', e.target.value)} />
           <br /><br />
-          <TextField label="Email" type="email" color="warning"
+          <TextField label="Email Address" type="email" color="warning"
             onChange={(e) => handelChenge('clientEmail', e.target.value)} />
           <br /><br />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <LocalizationProvider dateAdapter={AdapterDayjs} color ="warning">
             <DemoContainer
               components={['DateTimePicker']} >
               <DateTimePicker
@@ -107,7 +107,7 @@ const AppointmentForm = observer((props)=> {
         </DialogContent >
 
         <DialogActions>
-          <Button autoFocus type="submit" color="warning" onClick={handleClose} >
+          <Button autoFocus type="submit" color="warning" onClick={handleSave} >
             Save
           </Button>
         </DialogActions>

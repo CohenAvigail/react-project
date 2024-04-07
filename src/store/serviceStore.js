@@ -12,16 +12,16 @@ class ServiceStore {
             addService: action,
             get: computed
         });
-        this.initData();
+        this.init();
     }
 
-    async initData() {
+    async init() {
         try {
-            const res = await fetch(this.baseUrl);
+            const res = await fetch('http://localhost:8787/services');
             const data = await res.json;
-
             runInAction(() => {
                 this.list = data;
+                //this.list = {...data};
             });
         }
         catch (err) {
@@ -32,30 +32,34 @@ class ServiceStore {
     async addService(newObject) {
         try {
             const res = await fetch(this.baseUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newObject)
+                method: 'POST', 
+                body: JSON.stringify(newObject),
+                headers: { 'Content-Type': 'application/json' }
             });
-            const data = await res.json;
-            console.log(data);
-            this.render()
+           // const data = await res.json;
+           this.list = {...this.list,newObject}
+           console.log(res);
+           // this.render()
+           this.init();
         } catch (err) {
             console.log(err)
         }
+
     }
 
-    async get() {
-        try {
-            const res = await fetch(this.baseUrl);
-            const data = await res.json;
+    get get() {
+        return this.list;
+        // try {
+        //     const res = await fetch(this.baseUrl);
+        //     const data = await res.json;
 
-            runInAction(() => {
-                this.list = data;
-            });
-        }
-        catch (err) {
-            console.log(err);
-        }
+        //     runInAction(() => {
+        //         this.list = data;
+        //     });
+        // }
+        // catch (err) {
+        //     console.log(err);
+        // }
     }
 }
 const singleton = new ServiceStore();

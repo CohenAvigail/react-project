@@ -1,28 +1,50 @@
-import { makeObservable ,observable,action,runInAction,computed} from "mobx"; 
-class BusinessDetails{
+import { makeObservable, observable, action, runInAction, computed } from "mobx";
+class BusinessDetails {
 
-    baseUrl = "http://localhost:8787/businessData"
-    businessDetails = {}
+    baseUrl = "http://localhost:8787/businessData";
+    businessDetails = {
+        id: 0,
+        name: "",
+        address: "",
+        phone: "",
+        owner: "",
+        logo: "",
+        description: "",
+    }
+    detailBegin = {
+        id: 0,
+        name: "Business name",
+        address: "Business adress",
+        phone: "Your phone number",
+        owner: "The name of the business owner",
+        // logo:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQd07c32eHv3pYOsIRKDfv8QaZB88Z1Jfo3A&usqp=CAU",
+        logo: 'Your business logo',
+        description: "A short description of your business",
+    };
 
-    constructor(){
-        makeObservable(this,{
+    constructor() {
+        makeObservable(this, {
             businessDetails: observable,
             init: action,
-            addDetails:action,
+            addDetails: action,
             updateDetails: action,
             get: computed
         });
-        this.initData();
+        
+        this.addDetails(this.detailBegin);
+        this.init();
+        
     }
 
-    async initData() {
+    async init() {
         try {
             const res = await fetch(this.baseUrl);
-            const data = await res.json;
+            const data = await res.json();
 
             runInAction(() => {
-                this.businessDetails = data;
+                this.businessDetails = {...data};
             });
+
         }
         catch (err) {
             console.log(err);
@@ -34,11 +56,12 @@ class BusinessDetails{
             const res = await fetch(this.baseUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newObject)
+                body: JSON.stringify({...newObject})
+
             });
-            const data = await res.json;
-            console.log(data);
-            this.render()
+            const data = await res.json();
+            this.businessDetails = data ;
+            this.init();
         } catch (err) {
             console.log(err)
         }
@@ -49,30 +72,21 @@ class BusinessDetails{
             const res = await fetch(this.baseUrl, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newObject)
+                body: JSON.stringify({...newObject})
             });
-            const data = await res.json;
-            console.log(data);
-            this.render()
+            const data = await res.json();
+            this.businessDetails = data;
+            this.init();
+
         } catch (err) {
             console.log(err)
         }
     }
 
 
-    async get() {
-        try {
-            const res = await fetch(this.baseUrl);
-            const data = await res.json;
+    get get() {
+        return this.businessDetails;
 
-            runInAction(() => {
-                this.businessDetails = data;
-            });
-        }
-        catch (err) {
-            console.log(err);
-        }
     }
 }
-const singleton = new BusinessDetails();
-export default singleton;
+export default new BusinessDetails();

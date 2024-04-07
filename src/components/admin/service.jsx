@@ -29,6 +29,8 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function Service() {
+  
+  //we have to get the id in props from the map that exists in the serviceList 
   const serviceId=753;
 
   const [expanded, setExpanded] = React.useState(false);
@@ -42,25 +44,32 @@ export default function Service() {
  
   return (
     <>
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 290 }}>
+
+      {/* the header of the card */}
       <CardHeader
-        title="Service name"
+        title="Service Name"
         subheader="Time of service."
       />
+
+      {/* the picture of the service */}
       <CardMedia
         component="img"
         height="194"
         image="/assets/img.jpg"
         alt="Paella dish"
       />
+
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          Your description.
+        <Typography variant="body2" color="black">
+          Your description...
         </Typography>
       </CardContent>
+
+      {/* disableSpacing defines a space between the add appointment icon and expand more icon */}
       <CardActions disableSpacing>
         <IconButton aria-label="set an appointment">
-           <TodayIcon onClick={(e)=> setAppointment(!appointment)} />
+           <TodayIcon onClick={(e)=> setAppointment(true)} />
         </IconButton>
         <ExpandMore
           expand={expanded}
@@ -71,6 +80,7 @@ export default function Service() {
           <ExpandMoreIcon />
         </ExpandMore>
       </CardActions>
+
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph>Method:</Typography>
@@ -80,7 +90,7 @@ export default function Service() {
         </CardContent>
       </Collapse>
     </Card>
-    {appointment && <AppointmentForm serviceId={serviceId} appointment={appointment}></AppointmentForm>}
+    {appointment && <AppointmentForm serviceId={serviceId} setAppointment={setAppointment}></AppointmentForm>}
     </>
    
   );
