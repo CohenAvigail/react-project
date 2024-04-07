@@ -15,35 +15,43 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-function createData(id, serviceType, dateTime,clientName, clientPhone, clientEmail) {
+function createData(id, serviceType, date, time,clientName, clientPhone, clientEmail) {
     return {
         id,
         serviceType,
-        dateTime,
+        date,
+        time,
         clientName,
         clientPhone,
         clientEmail,
     };
-}
-
-const rows =  [store.meetingsList.map(x=> createData(x.id, x.serviceType, x.dateTime, x.clientName, x.clientPhone, x.clientEmail))];
-// console.log(store.meetingsList);
-// [createData(1, 'Service one', 305, 'Client One', "05-....", "Client@gmail.com"),
-// createData(1, 'Service two', 305, 'Avigail Choen', "0556776658", "Ac8531286@gmail.com")];
+}   
 
 const headCells = [
     //id, serviceType, dateTime,clientName, clientPhone, clientEmail
     {
-        id: 'serviceType',
+        id:"appointmentId",
         numeric: false,
         disablePadding: true,
+        label: 'ID',
+    },
+    {
+        id: 'serviceType',
+        numeric: false,
+        disablePadding: false,
         label: 'Service',
     },
     {
-        id: 'dateTime',
+        id: 'date',
         numeric: true,
         disablePadding: false,
         label: 'Date',
+    },
+    {
+        id: 'time',
+        numeric: true,
+        disablePadding: false,
+        label: 'Time',
     },
     {
         id: 'clientName',
@@ -79,8 +87,15 @@ function EnhancedTableHead() {
 EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
-//export default function EnhancedTable 
+
+
+
 const EnhancedTable = observer(() =>{
+
+    const rows =  
+    (store.getMeeting).map(x=> createData(x.id, x.serviceType, x.dateTime,x.dateTime, x.clientName, x.clientPhone, x.clientEmail));
+    
+
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -114,8 +129,10 @@ const EnhancedTable = observer(() =>{
 
                                 return (
                                     <TableRow hover key={row.id}>
+                                        <TableCell align="center">{row.id}</TableCell>
                                         <TableCell align="center">{row.serviceType}</TableCell>
-                                        <TableCell align="center">{row.dateTime}</TableCell>
+                                        <TableCell align="center">{row.date}</TableCell>
+                                        <TableCell align="center">{row.time}</TableCell>
                                         <TableCell align="center">{row.clientName}</TableCell>
                                         <TableCell align="center">{row.clientPhone}</TableCell>
                                         <TableCell align="center">{row.clientEmail}</TableCell>
@@ -132,7 +149,7 @@ const EnhancedTable = observer(() =>{
  
                 {/* This component is the bottom line of the table */}
                 <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPageOptions={[5, 10, 15]}
                     component="div"
                     count={rows.length}
                     rowsPerPage={rowsPerPage}
