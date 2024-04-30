@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route,useNavigate, useLocation } from 'react-router-dom';
+
 
 import store from '../store/businessDetails';
 import LogInForm from './login';
@@ -15,97 +17,84 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 
-
-export default function withRouter(MenuAppBar) {
+export default function MenuAppBar() {
     const [auth, setAuth] = useState(true);
-    const [anchorEl, setAnchorEl] = useState(null);
     const [clickedLogIn, setClickedLogIn] = useState(false);
     const [clickedUpdate, setClickedUpdate] = useState(false);
+    const [business, setBusiness] = useState(store.getBusinessDetails)
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    const location = useLocation();
+    const nav = useNavigate();
+
+    useEffect(()=>{
+        // Check if the current URL matches the admin URL
+        setIsAdmin(location.pathname.includes('/admin'));
+    },[location.pathname])
 
 
-    const business = store.get;
-    // function initBusiness(){
-    //     if(business=={})
-    //     store.addDetails({
-    //         id: "123",
-    //         name: "Coding Academy",
-    //         address: "Rothschild 60 Tel Aviv",
-    //         phone: "03-1234567",
-    //         owner: "Yariv Katz",
-    //         logo: "https://coding-academy.org/images/ca_logo.png",
-    //         description: "The best coding academy in the world"})
-    // }
+    // useEffect(() => {
+    //     console.log('useEffect store.businessDetails', store.businessDetails)
+    //     setBusiness(store.businessDetails);
+    //     // setBusiness({name:'aaa'})
+    // }, [])
 
-    // {
-    //     id: "123",
-    //     name: "Coding Academy",
-    //     address: "Rothschild 60 Tel Aviv",
-    //     phone: "03-1234567",
-    //     owner: "Yariv Katz",
-    //     logo: "https://coding-academy.org/images/ca_logo.png",
-    //     description: "The best coding academy in the world",
-    // };
 
     function handleClickLogIn() {
+        if(location.pathname.includes('/admin')){
+            
+        }
         setClickedLogIn(true);
-        // setStyle({opacity: 0});
     }
 
     function handleClickUpdate() {
         setClickedUpdate(true);
-        // setStyle({opacity: 0});
     }
 
     const handleChange = (event) => {
+        if (location.pathname.includes('/admin')){
+            nav('/');
+        }
         setAuth(event.target.checked);
     };
 
-    const handleMenu = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+    // const handleMenu = (event) => {
+    //     setAnchorEl(event.currentTarget);
+    // };
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    // const handleClose = () => {
+    //     setAnchorEl(null);
+    // };
 
     return (<>
         <Box sx={{ flexGrow: 1 }} style={{ color: 'chocolate' }} >
-            <FormGroup>
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={auth}
-                            onChange={handleChange}
-                            aria-label="login switch"
-                            color='warning'
-                            onClick={() => handleClickLogIn()}
-                        />
-                    }
-                    label={auth ? 'Login as administrator' : 'Login as a customer'}
-                />
-            </FormGroup>
+            {/* <FormGroup>
+                
+            </FormGroup> */}
             <AppBar position="fixed" color="inherit" >
-                <Toolbar >
-                    <IconButton
+                <Toolbar style={{justifyContent:'center'}}>
+                    <div style={{marginRight:'auto'}}>
+                    {isAdmin && <IconButton
                         size="large"
                         edge="start"
                         color="warning"
                         aria-label="menu"
                         sx={{ mr: 2 }}
-                        onClick={() => handleClickUpdate()}
+                        onClick={handleClickUpdate}
                     >
                         <CreateIcon />
-                    </IconButton>
+                    </IconButton>}
+                    </div>
                     {/* {()=>initBusiness()} */}
                     <div>
-                        <h3>name: {business.name}</h3>
-                        <h4>address: {business.address}</h4>
-                        <h4>phone: {business.phone}</h4>
-                        <h4>owner: {business.owner}</h4>
-                        <h4>description: {business.description}</h4>
+                        <h3>{business.name}</h3>
+                        <h4>{business.address}</h4>
+                        <h4>{business.phone}</h4>
+                        <h4>{business.owner}</h4>
+                        <h4>{business.description}</h4>
                     </div>
-                    <div>
-                        <IconButton
+                    <div style={{marginLeft:'auto'}}>
+                        {/* <IconButton
                             size="large"
                             aria-label="account of current user"
                             aria-controls="menu-appbar"
@@ -114,13 +103,25 @@ export default function withRouter(MenuAppBar) {
                             color="warning"
                         >
                             <AccountCircle />
-                        </IconButton>
+                        </IconButton> */}
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={auth}
+                                    onChange={handleChange}
+                                    aria-label="login switch"
+                                    color='warning'
+                                    onClick={handleClickLogIn}
+                                />
+                            }
+                            label={auth ? 'Login' : 'Logout'}
+                        />
                     </div>
                 </Toolbar>
             </AppBar>
         </Box>
-        {clickedLogIn && <LogInForm></LogInForm>}
-        {clickedUpdate && <UpdateBusiness {...business}></UpdateBusiness>}
+        {clickedLogIn && <LogInForm/>}
+        {clickedUpdate && <UpdateBusiness {...business} setBusiness={setBusiness} business={business}></UpdateBusiness>}
 
     </>
     );

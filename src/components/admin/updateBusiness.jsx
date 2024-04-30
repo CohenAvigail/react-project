@@ -25,33 +25,31 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 //export default function UpdateBusiness
 const UpdateBusiness = observer((props)=> {
-    const { id, name, address, phone, owner, logo, description } = props;
-    const [data, setData] = useState({
-        id: id,
-        name: name,
-        address: address,
-        phone: phone,
-        owner: owner,
-        logo: logo,
-        description: description
-    });
+    const { id, name, address, phone, owner, logo, description, setBusiness, business } = props;
+    
+    const [data, setData] = useState(business);
 
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = useState(true);
 
     async function handelSave() {
         store.updateDetails(data);
-        setOpen(!open);
+        localStorage.setItem('businessDetails', JSON.stringify(data));
+        setOpen(false);
     }
 
     function handleClose() {
         setOpen(!open);
     }
 
-    function handelChenge(field, value) {
-        let enter = data;
-        enter[field] = value;
-        setData(enter);
-        console.log(data);
+    function handleChange(field, value) {
+        // let enter = data;
+        // enter[field] = value;
+        // setData(enter);
+        // console.log(data);
+
+        const updatedData = { ...data, [field]: value };
+        setData(updatedData);
+        setBusiness(updatedData);
     }
 
     
@@ -68,22 +66,22 @@ const UpdateBusiness = observer((props)=> {
                 </IconButton>
                 <DialogContent dividers>
                     <TextField label="Name" type="text" color="warning"
-                        onChange={(e) => handelChenge('name', e.target.value)} />
+                       value={data.name} onChange={(e) => handleChange('name', e.target.value)} />
                     
                     <TextField label="Address" type="text" color="warning"
-                        onChange={(e) => handelChenge('address', e.target.value)} />
+                        value={data.address || address} onChange={(e) => handleChange('address', e.target.value)} />
                     <br /><br />
                     <TextField label="Phone" type="text" color="warning"
-                        onChange={(e) => handelChenge('phone', e.target.value)} />
+                        value={data.phone || phone} onChange={(e) => handleChange('phone', e.target.value)} />
                     
                     <TextField label="Owner" type="text" color="warning"
-                        onChange={(e) => handelChenge('owner', e.target.value)} />
+                        value={data.owner || owner} onChange={(e) => handleChange('owner', e.target.value)} />
                     <br /><br />
                     <TextField label="Logo" type="text" color="warning"
-                        onChange={(e) => handelChenge('logo', e.target.value)} />
+                        value={data.logo || logo} onChange={(e) => handleChange('logo', e.target.value)} />
                     
                     <TextField label="Description" type="text" color="warning"
-                        onChange={(e) => handelChenge('description', e.target.value)} />
+                        value={data.description || description} onChange={(e) => handleChange('description', e.target.value)} />
                 </DialogContent >
                 <DialogActions>
                     <div style={{ margin: '10px' }}>
