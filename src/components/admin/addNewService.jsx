@@ -23,7 +23,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         padding: theme.spacing(1),
     },
 }));
-// export default function AddNewService 
 
 const AddNewService = observer(() => {
     const [data, setData] = useState({
@@ -37,7 +36,7 @@ const AddNewService = observer(() => {
 
     const [open, setOpen] = React.useState(true);
 
-    function handelChenge(field, value) {
+    function handleChange(field, value) {
         let enter = data;
         enter[field] = value;
         setData(enter);
@@ -46,8 +45,8 @@ const AddNewService = observer(() => {
 
     function handleSave() {
         store.addService(data);
-        // console.log(store.get());
         setOpen(false);
+        store.init();
     }
 
     function handleClose() {
@@ -55,9 +54,6 @@ const AddNewService = observer(() => {
     }
 
     return (
-        // <Box component="form" sx={{
-        //     '& .MuiTextField-root': { m: 1, width: '25ch' },
-        // }} noValidate autoComplete="off" >
         <React.Fragment>
             <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title"> Add Service </DialogTitle>
@@ -72,16 +68,16 @@ const AddNewService = observer(() => {
                 <DialogContent dividers >
                     <div>
                         <TextField label="Name" type="text" color="warning"
-                            onChange={(e) => handelChenge('name', e.target.value)} />
+                            onChange={(e) => handleChange('name', e.target.value)} />
                         <br /><br />
                         <TextField label="Description" type="text" color="warning"
-                            onChange={(e) => handelChenge('description', e.target.value)} />
+                            onChange={(e) => handleChange('description', e.target.value)} />
                         <br /><br />
                         <TextField label="Price" type="text" color="warning"
-                            onChange={(e) => handelChenge('price', e.target.value)} />
+                            onChange={(e) => handleChange('price', e.target.value)} />
                         <br /><br />
                         <TextField label="Duration" type="number" color="warning" 
-                            onChange={(e) => handelChenge('duration', e.target.value)} />
+                            onChange={(e) => handleChange('duration', e.target.value)} />
                         <br /><br />
                     </div>
                 </DialogContent >
@@ -95,75 +91,7 @@ const AddNewService = observer(() => {
                 </DialogActions>
             </BootstrapDialog>
         </React.Fragment>
-        // </Box >
     );
 }
 )
 export default AddNewService;
-
-
-
-
-
-// import * as React from 'react';
-// import Button from '@mui/material/Button';
-// import TextField from '@mui/material/TextField';
-// import Dialog from '@mui/material/Dialog';
-// import DialogActions from '@mui/material/DialogActions';
-// import DialogContent from '@mui/material/DialogContent';
-// import DialogContentText from '@mui/material/DialogContentText';
-// import DialogTitle from '@mui/material/DialogTitle';
-
-// export default function FormDialog() {
-//   const [open, setOpen] = React.useState(false);
-
-//   const handleClickOpen = () => {
-//     setOpen(true);
-//   };
-
-//   const handleClose = () => {
-//     setOpen(false);
-//   };
-
-//   return (
-//     <React.Fragment>
-//       <Button variant="outlined" onClick={handleClickOpen}>
-//         Open form dialog
-//       </Button>
-//       <Dialog
-//         open={open}
-//         onClose={handleClose}
-//         PaperProps={{
-//           component: 'form',
-//           onSubmit: (event) => {
-//             event.preventDefault();
-//             const formData = new FormData(event.currentTarget);
-//             const formJson = Object.fromEntries(formData.entries());
-//             const email = formJson.email;
-//             console.log(email);
-//             handleClose();
-//           },
-//         }}
-//       >
-//         <DialogTitle>Subscribe</DialogTitle>
-//         <DialogContent>
-//           <TextField
-//             autoFocus
-//             required
-//             margin="dense"
-//             id="name"
-//             name="email"
-//             label="Email Address"
-//             type="email"
-//             fullWidth
-//             variant="standard"
-//           />
-//         </DialogContent>
-//         <DialogActions>
-//           <Button onClick={handleClose}>Cancel</Button>
-//           <Button type="submit">Subscribe</Button>
-//         </DialogActions>
-//       </Dialog>
-//     </React.Fragment>
-//   );
-// }

@@ -2,7 +2,7 @@ import { makeObservable, observable, action, runInAction ,computed} from 'mobx'
 
 class ServiceStore {
 
-    baseUrl = 'http://localhost:8787/service';
+    baseUrl = 'http://localhost:8787';
     list = [];
 
     constructor() {
@@ -17,8 +17,8 @@ class ServiceStore {
 
     async init() {
         try {
-            const res = await fetch('http://localhost:8787/services');
-            const data = await res.json;
+            const res = await fetch(this.baseUrl+'/services');
+            const data = await res.json();
             runInAction(() => {
                 this.list = data;
                 //this.list = {...data};
@@ -31,16 +31,21 @@ class ServiceStore {
 
     async addService(newObject) {
         try {
-            const res = await fetch(this.baseUrl, {
+            const res = await fetch(this.baseUrl+'/service', {
                 method: 'POST', 
                 body: JSON.stringify(newObject),
                 headers: { 'Content-Type': 'application/json' }
             });
-           // const data = await res.json;
-           this.list = {...this.list,newObject}
+
+           const data = await res.json();
+           
+           runInAction(()=>{
+                this.list.push(data);
+           })
+           
            console.log(res);
            // this.render()
-           this.init();
+           // this.init();
         } catch (err) {
             console.log(err)
         }
@@ -62,6 +67,6 @@ class ServiceStore {
         // }
     }
 }
-const singleton = new ServiceStore();
-export default singleton;
+
+export default new ServiceStore();
 
