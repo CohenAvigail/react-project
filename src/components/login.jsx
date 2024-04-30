@@ -6,7 +6,7 @@ import { useNavigate, Router, BrowserRouter} from 'react-router-dom';
 import ServicesList from './admin/servicesList';
 
 
-// import Swal from 'sweetalert2';
+import Swal from 'sweetalert2';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -28,9 +28,10 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const LogInForm = observer(() => {
+const LogInForm = observer(({setLoggedIn}) => {
 
-    
+    // const {setExist} = props;
+
     const nav = useNavigate();
 
     const [data, setData] = useState({
@@ -38,24 +39,38 @@ const LogInForm = observer(() => {
         password: ''
     });
 
-    // const [isAdmin, setIsAdmin] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const [open, setOpen] = useState(true);
 
     const [ok, setOk] = useState(false);
 
     async function handleLogIn() {
+
         let res = await store.addLogin(data);
-        console.log("res: ", res);
+        
         if (res.status == 401) {
-            // Swal.fire
-            alert("error");
+            handleClose();
+            await Swal.fire({
+                
+                icon: "error",
+                title: "Oops...",
+                text: "The data is incorrect!",
+            });
+            setOpen(true);
         }
+
         else if (res.status == 200) {
-            nav('/admin');
+            handleClose();
             setOk(true);
+            setIsAdmin(true);
+            // if(location.pathname.includes('./'))
+            
+            localStorage.setItem('isLoggedIn', 'true');
+            nav('/admin/services');
+            setLoggedIn(true);
         }
-        setOpen(false);
+        
     }
 
     function handleClose() {
@@ -104,12 +119,7 @@ const LogInForm = observer(() => {
                     </div>
                 </DialogActions>
             </BootstrapDialog>
-            {/* {ok && nav('/admin')} */}
-            {/* </Router> */}
-            {/* ,</BrowserRouter> */}
-        {/* </React.Fragment> */}
-</>
+          </>
     );
 });
 export default LogInForm;
-//withRouter()

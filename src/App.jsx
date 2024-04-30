@@ -1,40 +1,42 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import './App.css';
-import EnhancedTable from './components/meetingTable';
+import EnhancedTable from './components/admin/meetingTable';
 import SiteDoesntExist from './components/siteDoesntExist';
 import Service from './components/admin/service';
-import AppointmentForm from './components/client/appointmentTrying';
+import AppointmentForm from './components/client/addAppointment';
 import MenuAppBar from './components/bar';
 import AddNewService from './components/admin/addNewService'
 import ServicesList from './components/admin/servicesList';
 import Admin from './components/admin/admin';
+import LogInForm from './components/login';
 
 function App() {
-  const [exist, setExist] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(()=>{
+    const storedLoggedIn = localStorage.getItem('isLoggedIn');
+    if (storedLoggedIn === 'true') {
+      setLoggedIn(true);
+    }
+  },[]);
 
   return (<>
-    
-    <MenuAppBar />
-    <Router>
-      <Routes >
-        <Route path="/siteDoesNotExist" element={<SiteDoesntExist/>}/>
-        <Route path="/" element={<><MenuAppBar /></>} />
-        <Route path="/admin" element={<><Admin /></>} />
-        <Route path="/admin/services" element={<><Admin /><Service /><ServicesList /></>} />
-        <Route path="/admin/appointments" element={<><Admin />< EnhancedTable /></>} />
 
-          {/* <Route path="/servicesList" element={<><Service /></>} /> */}
+    <Router>
+
+      <Routes >
+
+        <Route path="/" element={loggedIn?<><MenuAppBar /><ServicesList /></>: <SiteDoesntExist setLoggedIn={setLoggedIn}></SiteDoesntExist>} />
+        <Route path="/admin" element={<><MenuAppBar /><LogInForm setLoggedIn={setLoggedIn}/></>} />
+        <Route path="/admin/services" element={<><MenuAppBar /><Admin /><ServicesList /></>} />
+        <Route path="/admin/appointments" element={<><MenuAppBar /><Admin />< EnhancedTable /></>} />
+      
       </Routes>
+
     </Router>
-    {/* <MenuAppBar/> */}
-    {/* { exist? <EnhancedTable></EnhancedTable> : <SiteDoesntExist></SiteDoesntExist>} */}
-    {/* <Service /> */}
-    {/* <AppointmentForm></AppointmentForm> */}
-    {/* <ServicesList/> */}
-    {/* <AddNewService/> */}
-    {/* <Admin></Admin> */}
+
   </>)
 }
 export default App;

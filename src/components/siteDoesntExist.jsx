@@ -1,30 +1,36 @@
+import React from "react";
+import './siteDoesntExist.css';
 import { useState } from "react"
 import LogInForm from "./login"
 import { useNavigate } from "react-router-dom";
 
-export default function SiteDoesntExist() {
 
-    const nav = useNavigate();
+export default function SiteDoesntExist({setLoggedIn}) {
+    // const {setExist} = props;
+    const[showLoginForm,setShowLoginForm] = useState(false);
 
-    // const[style, setStyle] = useState({opacity: 10});
-    const [clicked, setClicked] = useState(false);
+    function handleLoginClick(){
+        setShowLoginForm(true);
+        // setLoggedIn(true);
+        // localStorage.setItem('isLoggedIn', 'true');
+    };
 
-    function handleClick() {
-        setClicked(true);
-        setStyle({ opacity: 0 });
-    }
+    return (
+        !showLoginForm ? 
+            <div className="container">
+                <div className="content">
+                     <h1>Welcome to Your Site</h1>
+                     <p className="welcome-message">Hello Manager,</p>
+                     <p className="welcome-message">Your site is currently under construction.</p>
+                     <p className="welcome-message">We're working hard to bring it to life.</p>
+                     <p className="welcome-message">Please login to start building it.</p>
+                     <button onClick={handleLoginClick} className="login-link">Login</button>
 
-    
+                 </div>
+                 
 
-    return (<div >
-        <div>welcome! <br></br> the site does not exist</div>
-        <button onClick={() => { nav = ('/') }}>Let's build your site...</button>
-        {/* <button style={style} onClick={()=>handleClick()}>Let's build your site...</button> */}
-
-        {/* {clicked && <LogInForm></LogInForm>} */}
-
-
-    </div>
-    )
+            </div>
+        : <LogInForm setLoggedIn={setLoggedIn}/>
+    );
 
 }
